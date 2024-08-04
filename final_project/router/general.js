@@ -100,12 +100,10 @@ public_users.get("/author/:author/async", async (req, res) => {
       res.status(404).json({ message: "Books by this author not found" });
     }
   } catch (error) {
-    res
-      .status(500)
-      .json({
-        message: "Error fetching books by author",
-        error: error.message,
-      });
+    res.status(500).json({
+      message: "Error fetching books by author",
+      error: error.message,
+    });
   }
 });
 
@@ -125,6 +123,24 @@ public_users.get("/title/:title", function (req, res) {
     return res.status(200).json(booksByTitle);
   } else {
     return res.status(404).json({ message: "Books with this title not found" });
+  }
+});
+
+public_users.get("/title/:title/async", async (req, res) => {
+  const title = req.params.title;
+
+  try {
+    const response = await axios.get(`http://localhost:5000/title/${title}`);
+    const booksByTitle = response.data;
+    if (booksByTitle.length > 0) {
+      res.status(200).json(booksByTitle);
+    } else {
+      res.status(404).json({ message: "Books with this title not found" });
+    }
+  } catch (error) {
+    res
+      .status(500)
+      .json({ message: "Error fetching books by title", error: error.message });
   }
 });
 
